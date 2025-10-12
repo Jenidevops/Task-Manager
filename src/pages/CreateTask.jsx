@@ -20,7 +20,7 @@ const CreateTask = () => {
     <div
       className="min-h-screen py-12"
       style={{
-        backgroundImage: 'url("/src/assets/images/bgimage.png")',
+        backgroundImage: `url(${import.meta.env.BASE_URL}bgimage.png)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
