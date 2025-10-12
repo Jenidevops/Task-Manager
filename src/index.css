@@ -1,2 +1,4 @@
-@import "tailwindcss";
 @import "./modern-styles.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
