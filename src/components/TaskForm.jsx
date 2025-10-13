@@ -17,8 +17,14 @@ const TaskForm = ({ initialValues = {}, onSubmit, onCancel, isEditing = false })
       errors.priority = 'Priority is required';
     }
 
-    if (values.dueDate && new Date(values.dueDate) < new Date()) {
-      errors.dueDate = 'Due date cannot be in the past';
+    if (values.dueDate) {
+      const selectedDate = new Date(values.dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      if (selectedDate < today) {
+        errors.dueDate = 'Due date cannot be in the past';
+      }
     }
 
     return errors;
@@ -126,6 +132,7 @@ const TaskForm = ({ initialValues = {}, onSubmit, onCancel, isEditing = false })
               id="dueDate"
               name="dueDate"
               value={values.dueDate || ''}
+              min={new Date().toISOString().split('T')[0]}
               onChange={handleInputChange}
               onBlur={handleBlur}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${

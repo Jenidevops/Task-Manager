@@ -1,9 +1,9 @@
 import React from 'react';
 import TaskList from '../components/TaskList';
-import { useTasks } from '../hooks/useTasks';
+import { useTaskContext } from '../context/TaskContext';
 
 const Home = () => {
-  const { tasks, loading, deleteTask, toggleTask } = useTasks();
+  const { tasks, loading, deleteTask, toggleTask } = useTaskContext();
 
   if (loading) {
     return (

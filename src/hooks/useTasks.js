@@ -30,45 +30,49 @@ export const useTasks = () => {
 
   // Load tasks from localStorage on mount
   useEffect(() => {
-    try {
-      // Check if we're in the browser environment
-      if (typeof window !== 'undefined' && window.localStorage) {
-        const storedTasks = localStorage.getItem(STORAGE_KEY);
-        console.log('Loading from localStorage:', storedTasks); // Debug log
-        if (storedTasks && storedTasks !== 'undefined' && storedTasks !== 'null') {
-          const parsedTasks = JSON.parse(storedTasks);
-          if (Array.isArray(parsedTasks) && parsedTasks.length > 0) {
-            console.log('Using stored tasks:', parsedTasks); // Debug log
-            setTasks(parsedTasks);
+    const loadTasks = () => {
+      console.log('Loading tasks...'); // Debug
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const storedTasks = localStorage.getItem(STORAGE_KEY);
+          console.log('Stored tasks:', storedTasks); // Debug
+          
+          if (storedTasks && storedTasks !== 'undefined' && storedTasks !== 'null') {
+            const parsedTasks = JSON.parse(storedTasks);
+            console.log('Parsed tasks:', parsedTasks); // Debug
+            if (Array.isArray(parsedTasks)) {
+              setTasks(parsedTasks);
+              console.log('Loaded tasks from localStorage:', parsedTasks.length); // Debug
+            } else {
+              setTasks(defaultTasks);
+              console.log('Invalid stored data, using default tasks'); // Debug
+            }
           } else {
-            // Empty array or invalid data, use default tasks
-            console.log('Using default tasks - empty or invalid stored data'); // Debug log
             setTasks(defaultTasks);
+            console.log('No stored tasks, using default tasks'); // Debug
           }
         } else {
-          // No stored tasks, use default tasks
-          console.log('Using default tasks - no stored data'); // Debug log
           setTasks(defaultTasks);
+          console.log('No localStorage, using default tasks'); // Debug
         }
-      } else {
-        // Not in browser environment, use default tasks
-        console.log('Using default tasks - not in browser'); // Debug log
+      } catch (error) {
+        console.warn('Failed to load tasks from localStorage:', error);
         setTasks(defaultTasks);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.warn('Failed to load tasks from localStorage:', error);
-      setTasks(defaultTasks);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    loadTasks();
   }, []);
 
   // Save tasks to localStorage whenever tasks change
   useEffect(() => {
     if (!loading && typeof window !== 'undefined' && window.localStorage) {
+      console.log('Saving tasks to localStorage:', tasks.length); // Debug
       try {
-        console.log('Saving tasks to localStorage:', tasks); // Debug log
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        console.log('Tasks saved successfully'); // Debug
       } catch (error) {
         console.warn('Failed to save tasks to localStorage:', error);
       }
@@ -76,13 +80,19 @@ export const useTasks = () => {
   }, [tasks, loading]);
 
   const addTask = (task) => {
+    console.log('Adding new task:', task); // Debug
     const newTask = {
       ...task,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       completed: false
     };
-    setTasks(prev => [...prev, newTask]);
+    console.log('New task created:', newTask); // Debug
+    setTasks(prev => {
+      const updatedTasks = [...prev, newTask];
+      console.log('Updated tasks array:', updatedTasks); // Debug
+      return updatedTasks;
+    });
     return newTask;
   };
 

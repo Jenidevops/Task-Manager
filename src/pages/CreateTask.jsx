@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TaskForm from '../components/TaskForm';
-import { useTasks } from '../hooks/useTasks';
+import { useTaskContext } from '../context/TaskContext';
 
 const CreateTask = () => {
   const navigate = useNavigate();
-  const { addTask } = useTasks();
+  const { addTask } = useTaskContext();
 
   const handleSubmit = (taskData) => {
     addTask(taskData);
