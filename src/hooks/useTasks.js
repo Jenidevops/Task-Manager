@@ -34,15 +34,25 @@ export const useTasks = () => {
       // Check if we're in the browser environment
       if (typeof window !== 'undefined' && window.localStorage) {
         const storedTasks = localStorage.getItem(STORAGE_KEY);
-        if (storedTasks) {
+        console.log('Loading from localStorage:', storedTasks); // Debug log
+        if (storedTasks && storedTasks !== 'undefined' && storedTasks !== 'null') {
           const parsedTasks = JSON.parse(storedTasks);
-          setTasks(Array.isArray(parsedTasks) ? parsedTasks : defaultTasks);
+          if (Array.isArray(parsedTasks) && parsedTasks.length > 0) {
+            console.log('Using stored tasks:', parsedTasks); // Debug log
+            setTasks(parsedTasks);
+          } else {
+            // Empty array or invalid data, use default tasks
+            console.log('Using default tasks - empty or invalid stored data'); // Debug log
+            setTasks(defaultTasks);
+          }
         } else {
           // No stored tasks, use default tasks
+          console.log('Using default tasks - no stored data'); // Debug log
           setTasks(defaultTasks);
         }
       } else {
         // Not in browser environment, use default tasks
+        console.log('Using default tasks - not in browser'); // Debug log
         setTasks(defaultTasks);
       }
     } catch (error) {
@@ -55,12 +65,10 @@ export const useTasks = () => {
 
   // Save tasks to localStorage whenever tasks change
   useEffect(() => {
-    if (!loading) {
+    if (!loading && typeof window !== 'undefined' && window.localStorage) {
       try {
-        // Check if we're in the browser environment
-        if (typeof window !== 'undefined' && window.localStorage) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-        }
+        console.log('Saving tasks to localStorage:', tasks); // Debug log
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
       } catch (error) {
         console.warn('Failed to save tasks to localStorage:', error);
       }
