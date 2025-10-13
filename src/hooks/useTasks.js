@@ -31,29 +31,22 @@ export const useTasks = () => {
   // Load tasks from localStorage on mount
   useEffect(() => {
     const loadTasks = () => {
-      console.log('Loading tasks...'); // Debug
       try {
         if (typeof window !== 'undefined' && window.localStorage) {
           const storedTasks = localStorage.getItem(STORAGE_KEY);
-          console.log('Stored tasks:', storedTasks); // Debug
           
           if (storedTasks && storedTasks !== 'undefined' && storedTasks !== 'null') {
             const parsedTasks = JSON.parse(storedTasks);
-            console.log('Parsed tasks:', parsedTasks); // Debug
             if (Array.isArray(parsedTasks)) {
               setTasks(parsedTasks);
-              console.log('Loaded tasks from localStorage:', parsedTasks.length); // Debug
             } else {
               setTasks(defaultTasks);
-              console.log('Invalid stored data, using default tasks'); // Debug
             }
           } else {
             setTasks(defaultTasks);
-            console.log('No stored tasks, using default tasks'); // Debug
           }
         } else {
           setTasks(defaultTasks);
-          console.log('No localStorage, using default tasks'); // Debug
         }
       } catch (error) {
         console.warn('Failed to load tasks from localStorage:', error);
@@ -69,10 +62,8 @@ export const useTasks = () => {
   // Save tasks to localStorage whenever tasks change
   useEffect(() => {
     if (!loading && typeof window !== 'undefined' && window.localStorage) {
-      console.log('Saving tasks to localStorage:', tasks.length); // Debug
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-        console.log('Tasks saved successfully'); // Debug
       } catch (error) {
         console.warn('Failed to save tasks to localStorage:', error);
       }
@@ -80,19 +71,13 @@ export const useTasks = () => {
   }, [tasks, loading]);
 
   const addTask = (task) => {
-    console.log('Adding new task:', task); // Debug
     const newTask = {
       ...task,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       completed: false
     };
-    console.log('New task created:', newTask); // Debug
-    setTasks(prev => {
-      const updatedTasks = [...prev, newTask];
-      console.log('Updated tasks array:', updatedTasks); // Debug
-      return updatedTasks;
-    });
+    setTasks(prev => [...prev, newTask]);
     return newTask;
   };
 
