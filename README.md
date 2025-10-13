@@ -1,4 +1,4 @@
-✅ Task Manager
+✅ Task Manager - Updated
 
 🚀 Task Manager – A modern and responsive productivity app built with React + Vite + Tailwind CSS.
 Designed with glassmorphism, gradient backgrounds, and smooth animations for a delightful user experience.
