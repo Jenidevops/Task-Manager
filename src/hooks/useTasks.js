@@ -2,23 +2,71 @@ import { useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'tasks';
 
+// Sample tasks for demonstration
+const defaultTasks = [
+  {
+    id: '1',
+    title: 'Welcome to Task Manager',
+    description: 'This is a sample task to get you started. You can edit or delete this task.',
+    priority: 'medium',
+    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+    completed: false,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: '2',
+    title: 'Create your first task',
+    description: 'Click on "Create Task" to add your own tasks to the list.',
+    priority: 'high',
+    dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days from now
+    completed: false,
+    createdAt: new Date().toISOString()
+  }
+];
+
 export const useTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Load tasks from localStorage on mount
   useEffect(() => {
-    const storedTasks = localStorage.getItem(STORAGE_KEY);
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
-    }
-    setLoading(false);
+    const loadTasks = () => {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const storedTasks = localStorage.getItem(STORAGE_KEY);
+          
+          if (storedTasks && storedTasks !== 'undefined' && storedTasks !== 'null') {
+            const parsedTasks = JSON.parse(storedTasks);
+            if (Array.isArray(parsedTasks)) {
+              setTasks(parsedTasks);
+            } else {
+              setTasks(defaultTasks);
+            }
+          } else {
+            setTasks(defaultTasks);
+          }
+        } else {
+          setTasks(defaultTasks);
+        }
+      } catch (error) {
+        console.warn('Failed to load tasks from localStorage:', error);
+        setTasks(defaultTasks);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTasks();
   }, []);
 
   // Save tasks to localStorage whenever tasks change
   useEffect(() => {
-    if (!loading) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    if (!loading && typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      } catch (error) {
+        console.warn('Failed to save tasks to localStorage:', error);
+      }
     }
   }, [tasks, loading]);
 

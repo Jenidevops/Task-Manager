@@ -1,9 +1,9 @@
 import React from 'react';
 import TaskList from '../components/TaskList';
-import { useTasks } from '../hooks/useTasks';
+import { useTaskContext } from '../context/TaskContext';
 
 const Home = () => {
-  const { tasks, loading, deleteTask, toggleTask } = useTasks();
+  const { tasks, loading, deleteTask, toggleTask } = useTaskContext();
 
   if (loading) {
     return (
@@ -30,7 +30,7 @@ const Home = () => {
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold gradient-text">All Tasks</h1>
+            <h1 className="text-3xl font-bold gradient-text">All Tasks - UPDATED VERSION</h1>
             <p className="mt-2 text-gray-600 font-semibold">Manage your tasks efficiently</p>
           </div>
 
